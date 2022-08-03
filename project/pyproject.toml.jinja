@@ -1,0 +1,47 @@
+[project]
+name = "{{ python_package_distribution_name }}"
+description = "{{ project_description }}"
+authors = [
+    {name = "{{ author_name }}", email = "{{ author_email }}"}
+]
+license = {text = "{{ copyright_license }}"}
+readme = "README.md"
+requires-python = "{{ python_package_requires_python }}"
+dependencies = []
+version = "{{ python_package_init_version }}"
+
+[project.urls]
+Repository = "https://github.com/GraiaProject/{{ repository_name }}"
+
+[tool.pdm.build]
+package-dir = "src"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=22.6.0",
+    "isort>=5.10.1",
+    "pre-commit<3.0,>=2.19",
+]
+{% if build_ref %}
+doc = [
+    "mkdocs-material>=8.0",
+    "mkdocstrings[python]>=0.18.0",
+    "mkdocs-gen-files>=0.3.0",
+    "mkdocs-literate-nav>=0.4.0",
+    "mkdocs-section-index>=0.3.0",
+]
+{% endif %}
+
+[tool.pdm.scripts]
+{% if build_ref %}view_ref = {shell = "mkdocs serve", help = "Start the dev server for API ref preview"}{% endif %}
+post_install = "pre-commit install"
+lint = "pre-commit run --all-files"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+atomic = true
+filter_files = true
+known_first_party = ["{{python_package_import_name}}"]

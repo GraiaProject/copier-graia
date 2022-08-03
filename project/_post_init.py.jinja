@@ -1,0 +1,29 @@
+import contextlib
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).absolute().parent
+
+dotted_name = "{{ python_package_import_name }}"
+slashed_name = dotted_name.replace(".", "/")
+
+SOURCE_ROOT = Path(PROJECT_ROOT, "src", slashed_name)
+
+
+
+def delete_myself() -> None:
+    with contextlib.suppress(OSError):
+        Path(__file__).unlink()
+
+init_src = '"""{{ project_description }}"""'
+
+def write_package_src() -> None:
+    init_file = Path(SOURCE_ROOT, "__init__.py")
+    init_file.write_text(init_src)
+    typed_file = Path(SOURCE_ROOT, "py.typed")
+    typed_file.write_text("")
+
+
+if __name__ == "__main__":
+    SOURCE_ROOT.mkdir(parents=True, exist_ok=True)
+    write_package_src()
+    delete_myself()
